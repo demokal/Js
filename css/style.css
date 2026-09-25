@@ -1,0 +1,37 @@
+* {
+  font-family: 'Arial', sans-serif;
+}
+
+
+body{
+  background-color: #302929;
+}
+
+section {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+
+
+.container-fluid {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+a{
+  max-width: fit-content;
+
+  background-color: red;
+}
+
+.nav-opt{
+  margin-right: 100px;
+}
+.nav-item {
+  margin-left: 30px;
+}
+
+h1 { color: beige;
+}
