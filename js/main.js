@@ -35,44 +35,50 @@
 //     }
 // }
 
-let flores = [
-    "Rosa",
-    "Tulipán",
-    "Margarita",
-    "Girasol",
-    "Orquídea"
-];
-
-function mostrarFlores(flores) {
-    for (const flor of flores) {
-        console.log("Flor disponible: " + flor);
-    }
-}
-flores.push("Narciso");
-
-flores.unshift("Lavanda");
-
-let ultimaFlor = flores.pop();
-console.log("Se eliminó la última flor de la lista: " + ultimaFlor);
-
-flores.splice(2, 1, "Lirio");
-
-mostrarFlores(flores);
 
 
 
-let florBuscada = prompt("Ingrese el nombre de una flor para buscar:");
 
-if (flores.includes(florBuscada)) {
-    let indice = flores.indexOf(florBuscada);
-    console.log(
-        `La flor "${florBuscada}" está disponible y se encuentra en la posición ${indice}.`
-    );
-} else {
-    console.log(
-        `La flor "${florBuscada}" no se encuentra disponible en la tienda.`
-    );
+
+
+
+
+
+
+class item {
+
+  constructor(nombre, precio, stock, color ) {
+
+    this.nombre = nombre;
+
+    this.precio = parseFloat(precio);
+
+    this.stock = stock;
+
+    this.color = color;
+  }
+
+  sumarIva() {
+    this.precio *= 1.21;
+  }
+ 
 }
 
+const productos = [];
 
+  productos.push(new item("Rosa", 1000, 10, "Rojo"));
 
+  productos.push(new item("Tulipan", 800, 5, "Amarillo"));
+
+  productos.push(new item("Margarita", 500, 8, "Blanco"));
+
+  productos.push(new item("Orquidea", 1500, 3, "Morado"));
+
+  console.table(productos);
+
+  for (const producto of productos) {
+
+    producto.sumarIva();
+  }
+
+  console.table(productos);
