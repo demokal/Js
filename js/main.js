@@ -1,71 +1,100 @@
-class item {
 
-  constructor(nombre, precio, stock, color ) {
 
-    this.nombre = nombre;
+const flores = [
+  { nombre: "Rosa", precio: 1000, stock: 10, color: "Rojo" },
+  { nombre: "Tulipan", precio: 800, stock: 5, color: "Amarillo" },
+  { nombre: "Margarita", precio: 500, stock: 8, color: "Blanco" },
+  { nombre: "Orquidea", precio: 1500, stock: 3, color: "Morado" },
+  { nombre: "Girasol", precio: 1200, stock: 7, color: "Amarillo" },
+  { nombre: "Lirio", precio: 900, stock: 4, color: "Blanco" },
+  { nombre: "Clavel", precio: 700, stock: 6, color: "Rojo" },
+  { nombre: "Hortensia", precio: 1100, stock: 2, color: "Azul" }
+];
 
-    this.precio = parseFloat(precio);
+const contenedor = document.getElementById("contenedor-flores");
 
-    this.stock = stock;
+function renderizarFlores(lista) {
 
-    this.color = color;
-  }
+  contenedor.innerHTML = "";
 
-  sumarIva() {
-    this.precio *= 1.21;
-  }
- 
+  lista.forEach((flor) => {
+    contenedor.innerHTML += `
+      <div class="col-md-3">
+        <div class="card h-100 shadow producto"
+             onclick="mostrarProducto(${flores.indexOf(flor)})">
+
+          <img src="https://via.placeholder.com/300x200"
+               class="card-img-top"
+               alt="${flor.nombre}">
+
+          <div class="card-body">
+            <h5 class="card-title">${flor.nombre}</h5>
+
+            <p class="card-text">
+              Flor color <strong>${flor.color}</strong>.
+            </p>
+
+            <p class="badge bg-success">
+              $${flor.precio}
+            </p>
+
+            <p class="badge bg-success">
+              Stock: ${flor.stock}
+            </p>
+          </div>
+        </div>
+      </div>
+    `;
+    
+  });
 }
 
-const productos = [];
+    
+renderizarFlores(flores);
 
-  productos.push(new item("Rosa", 1000, 10, "Rojo"));
+const carrito = [];
 
-  productos.push(new item("Tulipan", 800, 5, "Amarillo"));
+function mostrarProducto(indice) {
+  const flor = flores[indice];
 
-  productos.push(new item("Margarita", 500, 8, "Blanco"));
+  carrito.push(flor);
 
-  productos.push(new item("Orquidea", 1500, 3, "Morado"));
+  let contenido = "";
 
-  productos.push(new item("Girasol", 1200, 7, "Amarillo"));
+  carrito.forEach(item => {
+    contenido += `
+      <div class="border-bottom mb-2 pb-2">
+        <h5>${item.nombre}</h5>
+        <p>Color: ${item.color}</p>
+        <p>Precio: $${item.precio}</p>
+      </div>
+    `;
+  });
 
-  productos.push(new item("Lirio", 900, 4, "Blanco"));
+  document.getElementById("contenidoCarrito").innerHTML = contenido;
 
-  productos.push(new item("Clavel", 700, 6, "Rojo"));
+  const total = carrito.reduce(
+    (acum, item) => acum + item.precio,
+    0
+  );
 
-  productos.push(new item("Hortensia", 1100, 2, "Azul"));
+  document.getElementById("totalCarrito").textContent =
+    `Total: $${total}`;
 
-  console.table(productos);
+  const modal = new bootstrap.Modal(
+    document.getElementById("modalCarrito")
+  );
 
-  for (const producto of productos) {
-
-    producto.sumarIva();
-  }
-
-  console.table(productos);
-
-
- while (confirm("Desea buscar informacion de nuestras flores?")) {
-
-  const buscarProducto = prompt("Que informacion desea buscar?: \n1. Precios de menor a mayor\n2. Stock total \n3. Productos de color:");
-
-  switch (buscarProducto) {
-    case "1":
-      const productosFiltrados = productos.sort((a, b) => a.precio - b.precio);
-      console.table(productosFiltrados);
-      break;
-    case "2":
-      const stockTotal = productos.reduce((total, producto) => total + producto.stock, 0);
-      console.log(`Stock total:` + stockTotal);
-      break;
-    case "3":
-      const colorProducto = prompt("Ingrese el color del producto: ");
-      const productosFiltradosColor = productos.filter(producto => producto.color.toLowerCase() === colorProducto.toLowerCase());
-      console.table(productosFiltradosColor);
-      break;
-    default:
-      console.log("Opción no válida.");
-  }
+  modal.show();
 }
-  
 
+const formBuscar = document.getElementById("formBuscar");
+
+formBuscar.onsubmit = function(event) {
+  event.preventDefault();
+
+  const busqueda = document.getElementById("buscador").value.toLowerCase();
+
+  const floresFiltradas = flores.filter((flor) => flor.nombre.toLowerCase().includes(busqueda));
+  renderizarFlores(floresFiltradas);
+}

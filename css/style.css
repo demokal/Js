@@ -1,0 +1,46 @@
+body {
+    height: 100vh;
+    font-family: Arial, sans-serif;
+    background-image: linear-gradient(to bottom, #f8eae3, #e4e1e1);
+}
+
+nav{
+    text-decoration: none;
+    background-color: rgb(235, 215, 187);
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+btn-buscar{
+    margin-top: 10px;
+    
+}
+
+.center{
+    max-width: 1200px;
+    margin: 40px auto; 
+}
+
+.letter{
+    margin-top: 50px;
+}
+
+.buscar{
+    max-width: 600px;
+    margin-top: 40px;
+    
+}
+
+.producto{
+    cursor:pointer;
+    transition:0.3s;
+}
+
+.producto:hover{
+    transform:scale(1.05);
+}
+
+.card-title{
+    color:#d63384;
+    font-weight:bold;
+}
