@@ -13,11 +13,14 @@ const flores = [
 
 const contenedor = document.getElementById("contenedor-flores");
 
+// vista de los productos
+
 function renderizarFlores(lista) {
 
   contenedor.innerHTML = "";
 
   lista.forEach((flor) => {
+    const { nombre, precio, stock, color } = flor;
     contenedor.innerHTML += `
       <div class="col-md-3">
         <div class="card h-100 shadow producto"
@@ -25,21 +28,23 @@ function renderizarFlores(lista) {
 
           <img src="https://via.placeholder.com/300x200"
                class="card-img-top"
-               alt="${flor.nombre}">
+               alt="${nombre}">
 
           <div class="card-body">
-            <h5 class="card-title">${flor.nombre}</h5>
+            <h5 class="card-title">${nombre}</h5>
 
             <p class="card-text">
-              Flor color <strong>${flor.color}</strong>.
+              Flor color <strong>${color}</strong>.
             </p>
 
             <p class="badge bg-success">
-              $${flor.precio}
+              $${precio}
             </p>
 
-            <p class="badge bg-success">
-              Stock: ${flor.stock}
+            <p class="badge ${
+              stock > 0 ? "bg-success" : "bg-danger"}">
+              ${
+              stock > 0 ? `Stock: ${stock}`: "Sin stock"}
             </p>
           </div>
         </div>
@@ -52,21 +57,52 @@ function renderizarFlores(lista) {
     
 renderizarFlores(flores);
 
-const carrito = [];
+const carrito = JSON.parse(localStorage.getItem("carrito")) || [];
+
 
 function mostrarProducto(indice) {
+
   const flor = flores[indice];
 
-  carrito.push(flor);
+  if (flor.stock > 0) {
+
+    carrito.push(flor);
+
+    localStorage.setItem(
+      "carrito",
+      JSON.stringify(carrito)
+    );
+
+    actualizarCarrito();
+
+    const modal = new bootstrap.Modal(
+      document.getElementById("modalCarrito")
+    );
+
+    modal.show();
+  }
+}
+
+// actualiza segun accion del usuario
+
+function actualizarCarrito() {
 
   let contenido = "";
 
-  carrito.forEach(item => {
+  carrito.forEach((item, index) => {
+
+    const { nombre, precio, color } = item;
+
     contenido += `
       <div class="border-bottom mb-2 pb-2">
-        <h5>${item.nombre}</h5>
-        <p>Color: ${item.color}</p>
-        <p>Precio: $${item.precio}</p>
+        <h5>${nombre}</h5>
+        <p>Color: ${color}</p>
+        <p>Precio: $${precio}</p>
+
+        <button class="btn btn-danger btn-sm"
+                onclick="eliminarDelCarrito(${index})">
+          Eliminar
+        </button>
       </div>
     `;
   });
@@ -80,17 +116,25 @@ function mostrarProducto(indice) {
 
   document.getElementById("totalCarrito").textContent =
     `Total: $${total}`;
+}
 
-  const modal = new bootstrap.Modal(
-    document.getElementById("modalCarrito")
+// Eliminar del carrito
+
+function eliminarDelCarrito(indice) {
+  carrito.splice(indice, 1);
+
+  localStorage.setItem(
+    "carrito",
+    JSON.stringify(carrito)
   );
 
-  modal.show();
+  actualizarCarrito();
 }
 
 const formBuscar = document.getElementById("formBuscar");
 
 formBuscar.onsubmit = function(event) {
+
   event.preventDefault();
 
   const busqueda = document.getElementById("buscador").value.toLowerCase();
@@ -98,3 +142,29 @@ formBuscar.onsubmit = function(event) {
   const floresFiltradas = flores.filter((flor) => flor.nombre.toLowerCase().includes(busqueda));
   renderizarFlores(floresFiltradas);
 }
+
+document.getElementById("btnPagar").addEventListener("click", () => {
+
+  carrito.forEach(itemCarrito => {
+
+    const florOriginal = flores.find(
+      flor => flor.nombre === itemCarrito.nombre
+    );
+
+    if (florOriginal && florOriginal.stock > 0) {
+      florOriginal.stock--;
+    }
+  });
+
+  carrito.length = 0;
+
+  localStorage.setItem(
+    "carrito",
+    JSON.stringify(carrito)
+  );
+
+  actualizarCarrito();
+  renderizarFlores(flores);
+
+});
+
