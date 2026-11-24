@@ -218,6 +218,17 @@ document.getElementById("btnPagar").addEventListener("click", () => {
 
 });
 
+cargarFlores();
+
+setTimeout(() => {
+  Swal.fire({
+    title: "📦 Estado del stock",
+    text: "El stock de flores bajara al momento de pagar, si agregas mas de las que hay, solo recibiras la cantidad acorde al stock.",
+    icon: "info",
+    confirmButtonText: "Entendido"
+  });
+}, 3000);
+
 
 
 
