@@ -1,19 +1,11 @@
 
 
-const flores = [
-  { nombre: "Rosa", precio: 1000, stock: 10, color: "Rojo" },
-  { nombre: "Tulipan", precio: 800, stock: 5, color: "Amarillo" },
-  { nombre: "Margarita", precio: 500, stock: 8, color: "Blanco" },
-  { nombre: "Orquidea", precio: 1500, stock: 3, color: "Morado" },
-  { nombre: "Girasol", precio: 1200, stock: 7, color: "Amarillo" },
-  { nombre: "Lirio", precio: 900, stock: 4, color: "Blanco" },
-  { nombre: "Clavel", precio: 700, stock: 6, color: "Rojo" },
-  { nombre: "Hortensia", precio: 1100, stock: 2, color: "Azul" }
-];
+let flores = []
 
 const contenedor = document.getElementById("contenedor-flores");
 
 // vista de los productos
+
 
 function renderizarFlores(lista) {
 
@@ -54,8 +46,53 @@ function renderizarFlores(lista) {
   });
 }
 
-    
-renderizarFlores(flores);
+const estado = document.getElementById("estado");
+
+async function cargarFlores() {
+
+  try {
+
+    estado.innerHTML = `
+      <p class="text-primary text-center">
+        Cargando catálogo...
+      </p>
+    `;
+
+    const respuesta = await fetch("./json/data.json");
+
+    if (!respuesta.ok) {
+      throw new Error();
+    }
+
+    flores = await respuesta.json();
+
+    renderizarFlores(flores);
+
+    estado.innerHTML = `
+      <p class="text-success text-center">
+        Catálogo cargado correctamente.
+      </p>
+    `;
+
+  } catch {
+
+    estado.innerHTML = `
+      <p class="text-danger text-center">
+        Error al cargar los productos.
+      </p>
+    `;
+
+  } finally {
+
+    setTimeout(() => {
+      estado.innerHTML = "";
+    }, 3000);
+
+  }
+
+}
+
+cargarFlores();
 
 const carrito = JSON.parse(localStorage.getItem("carrito")) || [];
 
@@ -80,8 +117,14 @@ function mostrarProducto(indice) {
     );
 
     modal.show();
-  }
-}
+  } else {
+
+  Swal.fire({
+    title: "Sin stock",
+    text: "Esta flor no está disponible actualmente.",
+    icon: "warning"
+  });
+}}
 
 // actualiza segun accion del usuario
 
@@ -166,5 +209,16 @@ document.getElementById("btnPagar").addEventListener("click", () => {
   actualizarCarrito();
   renderizarFlores(flores);
 
+  Swal.fire({
+    title: "¡Compra realizada!",
+    text: "Gracias por elegir nuestra florería.",
+    icon: "success",
+    confirmButtonText: "Aceptar"
+  });
+
 });
+
+
+
+
 
